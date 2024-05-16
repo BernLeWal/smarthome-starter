@@ -1,0 +1,17 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// !!!!! IMPORTANT !!!!!
+// Please change the values within "<Your...>"" below to match your own configuration
+// and save the file as "config.h"
+
+// WiFi
+const char* SSID = "<Your WIFI SSID>";
+const char* WiFiPassword = "<Your WIFI Password>";
+
+// MQTT
+const char broker[] = "test.mosquitto.org"; // or the MQTT broker of your choice
+int        port     = 1883;                 // or the port your MQTT broker uses
+const char topic[]  = "/<Define a topic-name>/shs/humitemp";
+
+#endif // CONFIG_H

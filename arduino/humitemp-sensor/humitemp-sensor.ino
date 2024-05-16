@@ -4,8 +4,25 @@ It measures temperature and humidity
 */
 
 #include <Arduino.h>
+#include "config.h" // configuration settings (WIFI SSID, MQTT Broker,...)
+#include "wifi.h"   // utilities to use WiFi
+#include "mqtt.h"   // utilities to use MQTT
+
+// Libraries for DHT22 sensor
 #include "DHT.h"
 
+
+// Setup for the ESP32
+uint64_t chipid;
+bool device_info_displayed = false;
+
+void display_device_info() {
+  Serial.println("SHS HumiTemp-Sensor");
+  Serial.printf("Device ID=%llX\n", chipid);
+}
+
+
+// Setup for the DHT22 sensor
 #define DHTPIN 4
 #define LEDPIN 2
 
@@ -24,19 +41,47 @@ float hum;
 unsigned long previousMillis = 0;   // Stores last time temperature was published
 const long interval = 10000;        // Interval at which to publish sensor readings
 
+int readingID = 0;    //packet counter
 
+void sendDataMQTT(String subtopic, float value) {
+  char datatopic[128];
+  char output[128];
+
+  snprintf(datatopic, 128, "%s/%llX/%s", topic, chipid, subtopic);
+  snprintf(output, 128, "%2.1f", value);
+  mqttClient.beginMessage(datatopic);
+  mqttClient.print(output);
+  mqttClient.endMessage();
+  Serial.printf("MQTT data #%d sent to %s: data=%s \n", readingID++, datatopic, output);
+}
+
+
+
+ 
 void setup() {
   Serial.begin(115200);
-  Serial.println("SHS HumiTemp-Sensor");
+  display_device_info();
+  chipid = ESP.getEfuseMac(); //The chip ID is essentially its MAC address(length: 6 bytes).
 
   dht.begin();
   pinMode(LEDPIN, OUTPUT);
+
+  connectToWiFi();
+  connectToMQTT();
+  Serial.println("setup done");  
 }
+
 
 void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;   // Save the last time a new reading was published
+
+
+    if (!device_info_displayed) {
+      display_device_info();
+      device_info_displayed = true;
+    }
 
     digitalWrite(LEDPIN, HIGH); // Blink the LED
 
@@ -49,7 +94,10 @@ void loop() {
       return;
     }
 
-    Serial.printf("Temp=%2.1f°C, Humi=%2.1f%%\n", temp, hum);
+    Serial.printf("Measured Temp=%2.1f°C, Humi=%2.1f%%\n", temp, hum);
+
+    sendDataMQTT("temp", temp);
+    sendDataMQTT("hum", hum);
 
     digitalWrite(LEDPIN, LOW);
   }
