@@ -10,8 +10,12 @@ const char* SSID = "<Your WIFI SSID>";
 const char* WiFiPassword = "<Your WIFI Password>";
 
 // MQTT
-const char broker[] = "test.mosquitto.org"; // or the MQTT broker of your choice
-int        port     = 1883;                 // or the port your MQTT broker uses
+const char mqtt_broker[] = "test.mosquitto.org"; // or the MQTT broker of your choice
+int        mqtt_port     = 1883;                 // or the port your MQTT broker uses
+
+const char mqtt_user[] = ""                      // add your credentials if necessary 
+const char mqtt_pwd[] = ""                       // if empty, then no credetials are used
+
 const char topic[]  = "/<Define a topic-name>/shs/humitemp";
 
 #endif // CONFIG_H

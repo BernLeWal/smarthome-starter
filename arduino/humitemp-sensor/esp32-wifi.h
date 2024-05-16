@@ -1,12 +1,24 @@
-#ifndef WIFI_H
-#define WIFI_H
+#ifndef ESP32_WIFI_H
+#define ESP32_WIFI_H
 
 //Libraries for Web connection
 #include <WiFi.h>
 
 #define BUILTIN_LED 2
 
-WiFiClient espClient;
+void printStatus() {
+  switch ( WiFi.status() ) {
+    case WL_IDLE_STATUS : Serial.print("IDLE "); break;
+    case WL_NO_SSID_AVAIL : Serial.print("NO_SSID "); break;
+    case WL_SCAN_COMPLETED : Serial.print("SCAN "); break;
+    case WL_CONNECTED : Serial.print("CONN "); break;
+    case WL_CONNECT_FAILED : Serial.print("FAIL "); break;
+    case WL_CONNECTION_LOST : Serial.print("LOST "); break;
+    case WL_DISCONNECTED : Serial.print("DISC "); break;
+    default: Serial.print("unknown");
+  }
+  //Serial.printf("%d ", WiFi.status() );
+}
 
 void connectToWiFi() {
   WiFi.mode(WIFI_STA);
@@ -14,9 +26,10 @@ void connectToWiFi() {
   Serial.print("Connecting to "); Serial.println(SSID);
  
   uint8_t i = 0;
-  while (WiFi.status() != WL_CONNECTED)
+  while (WiFi.status() != WL_CONNECTED) // waitForConnectResult
   {
-    Serial.print('.');
+    // Serial.prinf('.');
+    printStatus();
     delay(500);
  
     if ((++i % 16) == 0)
@@ -44,4 +57,4 @@ void connectToWiFi() {
 }
 
 
-#endif // WIFI_H
+#endif // ESP32_WIFI_H

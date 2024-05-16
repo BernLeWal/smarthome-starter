@@ -5,21 +5,14 @@ It measures temperature and humidity
 
 #include <Arduino.h>
 #include "config.h" // configuration settings (WIFI SSID, MQTT Broker,...)
-#include "wifi.h"   // utilities to use WiFi
-#include "mqtt.h"   // utilities to use MQTT
+
+#include "esp32.h"        // utilities for the ESP32
+#include "esp32-wifi.h"   // utilities to use WiFi
+#include "esp32-mqtt.h"   // utilities to use MQTT
+
 
 // Libraries for DHT22 sensor
 #include "DHT.h"
-
-
-// Setup for the ESP32
-uint64_t chipid;
-bool device_info_displayed = false;
-
-void display_device_info() {
-  Serial.println("SHS HumiTemp-Sensor");
-  Serial.printf("Device ID=%llX\n", chipid);
-}
 
 
 // Setup for the DHT22 sensor
@@ -47,7 +40,7 @@ void sendDataMQTT(String subtopic, float value) {
   char datatopic[128];
   char output[128];
 
-  snprintf(datatopic, 128, "%s/%llX/%s", topic, chipid, subtopic);
+  snprintf(datatopic, 128, "%s/%X/%s", topic, deviceid, subtopic);
   snprintf(output, 128, "%2.1f", value);
   mqttClient.beginMessage(datatopic);
   mqttClient.print(output);
@@ -56,19 +49,19 @@ void sendDataMQTT(String subtopic, float value) {
 }
 
 
-
  
 void setup() {
   Serial.begin(115200);
+  pinMode(LEDPIN, OUTPUT);
+
+  get_device_info();
   display_device_info();
-  chipid = ESP.getEfuseMac(); //The chip ID is essentially its MAC address(length: 6 bytes).
 
   dht.begin();
-  pinMode(LEDPIN, OUTPUT);
 
   connectToWiFi();
   connectToMQTT();
-  Serial.println("setup done");  
+  Serial.println("Setup done");  
 }
 
 
@@ -76,12 +69,6 @@ void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;   // Save the last time a new reading was published
-
-
-    if (!device_info_displayed) {
-      display_device_info();
-      device_info_displayed = true;
-    }
 
     digitalWrite(LEDPIN, HIGH); // Blink the LED
 

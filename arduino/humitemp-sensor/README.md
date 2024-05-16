@@ -43,7 +43,7 @@ Wire the DHT22 to the ESP as shown in the following picture with the data pin co
 * or use a MQTT-Dashboard App on your Android Smartphone, e.g. https://play.google.com/store/apps/details?id=com.doikov.mqttclient&hl=en&gl=US&pli=1
     - Use the same settings like above
     - Create two Widgets, one for the Temperature and one for the Humidity
-    - The result should look like in the screenshot below:
+    - The result should look like in the screenshot below:  
     ![MQTT-Dashboard](./screenshot-MQTT-Dashboard%20App.png)
 
 
