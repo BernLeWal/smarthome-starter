@@ -7,7 +7,7 @@ A Mosquitto MQTT-Broker is contained here in order to provide a docker container
 - Start the container: ```docker compose up -d```
 - Check the ip address of your host: ```ipconfig``` --> remember your IPv4 address
 - Update the broker-settings in your config.h files
-    - mqtt_broker = "<your ipv4 address>"
+    - mqtt_broker = "your computers ipv4 address"
     - mqtt_port     = 1883
     - mqtt_user = shs-sensor
     - mqtt_pwd = shs-pass

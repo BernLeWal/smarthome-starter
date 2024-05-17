@@ -11,6 +11,7 @@ WiFiClient espClient;
 MqttClient mqttClient(espClient);
 
 
+
 void connectToMQTT() {
   Serial.print("Attempting to connect to the MQTT broker: ");
   Serial.print(mqtt_broker);
@@ -33,4 +34,13 @@ void connectToMQTT() {
   Serial.println();
 }
 
+
+int readingID = 0;    //packet counter
+
+void sendDataMQTT(String topic, String data) {
+  mqttClient.beginMessage(topic);
+  mqttClient.print(data);
+  mqttClient.endMessage();
+  Serial.printf("MQTT data #%d sent to %s: data=%s \n", readingID++, topic.c_str(), data.c_str());
+}
 #endif // ESP32_MQTT_H

@@ -4,6 +4,7 @@ It measures temperature and humidity
 */
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "config.h" // configuration settings (WIFI SSID, MQTT Broker,...)
 
 #include "esp32.h"        // utilities for the ESP32
@@ -34,20 +35,24 @@ float hum;
 unsigned long previousMillis = 0;   // Stores last time temperature was published
 const long interval = 10000;        // Interval at which to publish sensor readings
 
-int readingID = 0;    //packet counter
 
-void sendDataMQTT(String subtopic, float value) {
-  char datatopic[128];
+char topic_hum[128];
+char topic_temp[128];
+char topic_json[128];
+
+void sendDataJSON() {
+  StaticJsonDocument<48> doc;
   char output[128];
+  doc["id"] = String(deviceid, HEX);
+  doc["type"] = "humitemp";
+  doc["temp"] = temp;
+  doc["hum"] = hum;
+  doc["pressure"] = -1;
 
-  snprintf(datatopic, 128, "%s/%X/%s", topic, deviceid, subtopic);
-  snprintf(output, 128, "%2.1f", value);
-  mqttClient.beginMessage(datatopic);
-  mqttClient.print(output);
-  mqttClient.endMessage();
-  Serial.printf("MQTT data #%d sent to %s: data=%s \n", readingID++, datatopic, output);
+  serializeJson(doc, output);
+
+  sendDataMQTT(topic_json, output);
 }
-
 
  
 void setup() {
@@ -61,6 +66,11 @@ void setup() {
 
   connectToWiFi();
   connectToMQTT();
+
+  snprintf(topic_temp, 128, "%s/%X/temp", topic, deviceid);
+  snprintf(topic_hum, 128, "%s/%X/hum", topic, deviceid);
+  snprintf(topic_json, 128, "%s/%X", topic, deviceid);
+
   Serial.println("Setup done");  
 }
 
@@ -83,8 +93,9 @@ void loop() {
 
     Serial.printf("Measured Temp=%2.1f°C, Humi=%2.1f%%\n", temp, hum);
 
-    sendDataMQTT("temp", temp);
-    sendDataMQTT("hum", hum);
+    sendDataMQTT(topic_temp, String(temp,1));
+    sendDataMQTT(topic_hum, String(hum,1));
+    sendDataJSON();
 
     digitalWrite(LEDPIN, LOW);
   }
