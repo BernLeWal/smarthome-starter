@@ -1,0 +1,4 @@
+datasheets/
+# MQTT Broker
+mosquitto/data/
+mosquitto/log/
