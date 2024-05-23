@@ -43,7 +43,7 @@ char topic_json[128];
 void sendDataJSON() {
   StaticJsonDocument<48> doc;
   char output[128];
-  doc["id"] = String(deviceid, HEX);
+  doc["id"] = WiFi.macAddress(); //String(deviceid, HEX);
   doc["type"] = "humitemp";
   doc["temp"] = temp;
   doc["hum"] = hum;
