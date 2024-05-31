@@ -1,4 +1,6 @@
 datasheets/
+# Python
+__pycache__/
 # MQTT Broker
 mosquitto/data/
 mosquitto/log/

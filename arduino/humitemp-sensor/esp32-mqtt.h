@@ -30,7 +30,7 @@ void connectToMQTT() {
     ESP.restart();
   }
  
-  Serial.println("You're connected to the MQTT broker!");
+  Serial.println("Connected to the MQTT broker!");
   Serial.println();
 }
 
@@ -38,6 +38,10 @@ void connectToMQTT() {
 int readingID = 0;    //packet counter
 
 void sendDataMQTT(String topic, String data) {
+  if (!mqttClient.connected()) {
+    connectToMQTT();
+  }
+
   mqttClient.beginMessage(topic);
   mqttClient.print(data);
   mqttClient.endMessage();
