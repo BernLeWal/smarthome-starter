@@ -41,6 +41,7 @@ services:
     ports:
       - "4200:4200"
       - "4300:4300"
+      - "5432:5432"
   
   grafana:
     image: grafana/grafana
@@ -50,7 +51,15 @@ services:
       - "3000:3000"
     environment:
         - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-worldmap-panel
- 
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - crate-db
+    ports:
+      - 8080:8080
+
 
 networks:
   default:

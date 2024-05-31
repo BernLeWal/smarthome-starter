@@ -20,7 +20,7 @@ This project sets up an IoT data processing and visualization platform using Doc
 - (**Mosquitto:** MQTT-Broker for message-based transfer of data from the IoT-sensors to the platform. see [Mosquitto.md](Mosquitto.md))
 - **Orion-LD:** Context broker for managing context data in NGSI-LD format, see [Orion-LD.md](Orion-LD.md).
 - **QuantumLeap:** Stores time-series data received from Orion-LD, see [QuantumLeap.md](QuantumLeap.md).
-- **Grafana:** Dashboard visualization tool for analyzing data stored in QuantumLeap.
+- **Grafana:** Dashboard visualization tool for analyzing data stored in CrateDB, see [Grafana.md](Grafana.md).
 - **MongoDB:** Database for storing non-time-series data.
 - **CrateDB:** Distributed SQL database for storing large volumes of time-series data efficiently, see [CrateDB.md](CrateDB.md).
 - **Python App:** Subscribes to MQTT messages, processes them, and updates context data in Orion-LD, see [app.py](../src/app.py)

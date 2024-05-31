@@ -13,11 +13,72 @@
 - **Full-Text Search**: Built on top of Apache Lucene, CrateDB offers powerful full-text search capabilities, making it suitable for applications requiring text indexing and search functionality.
 - **High Availability and Fault Tolerance**: Automated data replication and sharding ensure high availability and fault tolerance, with self-healing mechanisms to recover from node failures seamlessly.
 
+Remarks:
+- CrateDB supports a PostgreSQL port 5432 for managing and query the database.
+- CrateDB default user is "crate" and does not require a password (leave empty or use "password").
+
 ## Links
 
 - Official Site of CrateDB: https://cratedb.com/
 - GitHub Repo: https://github.com/crate/crate, https://github.com/crate
 - Official Docker Hub Image: https://hub.docker.com/_/crate
+
+## Entry Points
+
+### CrateDB Shell "crash"
+
+* Start the CrateDB Shell:
+```shell
+crash 
+# or to access a CrateDB server on annother host:
+crash --host "192.168.1.224"
+```
+
+* Show existing tables:
+```
+cr> SHOW TABLES;
++-----------------+
+| table_name      |
++-----------------+
+| etsensorreading |
+| md_ets_metadata |
++-----------------+
+SHOW 2 rows in set (0.005 sec)
+cr>
+```
+
+* Show contents of a table:
+```sql
+-- Retrieve most recent data from the table
+SELECT * FROM etsensorreading ORDER BY time_index DESC LIMIT 10;
+
+SELECT DATE_FORMAT('%Y-%m-%d %H:%i:%s', time_index) AS formatted_date, *
+FROM etsensorreading ORDER BY time_index DESC LIMIT 10;
+
+-- Retrieve the amount of rows in a table
+SELECT COUNT(*) FROM etsensorreading;
+
+-- Retrieve the table definitions
+SELECT column_name, data_type, is_nullable, column_default
+FROM information_schema.columns
+WHERE table_name = 'etsensorreading'
+ORDER BY ordinal_position;
+```
+
+| formatted_date      | entity_id         | entity_type   | time_index | fiware_servicepath |  _original_ngsi_entity__ | temperature | humidity | pressure |
+| ------------------- | ----------------- | ------------- | ---------- | ------------------ | ----------------------- | ----------- | -------- | -------- |
+| 2024-05-31 08:37:49 | A0:DD:6C:10:8A:4C | SensorReading | 1717144669537 |                    | NULL                     |        25.9 |     58.8 |       -1 |
+| 2024-05-31 08:37:39 | A0:DD:6C:10:8A:4C | SensorReading | 1717144659608 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+| 2024-05-31 08:37:29 | A0:DD:6C:10:8A:4C | SensorReading | 1717144649515 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+| 2024-05-31 08:37:19 | A0:DD:6C:10:8A:4C | SensorReading | 1717144639569 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+| 2024-05-31 08:37:09 | A0:DD:6C:10:8A:4C | SensorReading | 1717144629771 |                    | NULL                     |        25.9 |     58.8 |       -1 |
+| 2024-05-31 08:36:59 | A0:DD:6C:10:8A:4C | SensorReading | 1717144619487 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+| 2024-05-31 08:36:49 | A0:DD:6C:10:8A:4C | SensorReading | 1717144609740 |                    | NULL                     |        25.9 |     58.8 |       -1 |
+| 2024-05-31 08:36:39 | A0:DD:6C:10:8A:4C | SensorReading | 1717144599619 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+| 2024-05-31 08:36:29 | A0:DD:6C:10:8A:4C | SensorReading | 1717144589558 |                    | NULL                     |        25.9 |     58.8 |       -1 |
+| 2024-05-31 08:36:19 | A0:DD:6C:10:8A:4C | SensorReading | 1717144579608 |                    | NULL                     |        25.9 |     58.9 |       -1 |
+
+SELECT 10 rows in set (0.009 sec)
 
 ## HOWTO
 

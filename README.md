@@ -21,6 +21,14 @@ SHS
 
 ## Entry Points
 
+* Grafana: http://localhost:3000 - admin/admin (change password on first login)
+* adminer: http://localhost:8080/?pgsql=crate-db&username=crate
+  - Database system: PostgreSQL
+  - Server: crate-db
+  - User: crate
+  - Password: password
+  - Database: \<leave empty\>
+
 ### MQTT:
 
 - Online MQTT-Client: https://testclient-cloud.mqtt.cool/  
