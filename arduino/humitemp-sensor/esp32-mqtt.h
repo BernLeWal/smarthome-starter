@@ -5,9 +5,10 @@
 
 //Libraries for MQTT connection
 #include <ArduinoMqttClient.h>
+#include <WiFiClientSecure.h>
 
 // Setup MQTT
-WiFiClient espClient;
+WiFiClientSecure espClient;
 MqttClient mqttClient(espClient);
 
 
@@ -18,6 +19,9 @@ void connectToMQTT() {
   Serial.print(" on port ");
   Serial.println(mqtt_port);
  
+  if (strlen(caCert) > 0) {
+    espClient.setCACert(caCert);
+  }
   mqttClient.setId("HumiTemp-Sensor");
   if ( strlen(mqtt_user) > 0 ) {
     mqttClient.setUsernamePassword(mqtt_user, mqtt_pwd);
